@@ -2,6 +2,9 @@
 #       Functions for Spell Checking and Correction for CFA-Cal-Fresh Project
 #       Author: Rocio Ng
 #       * Credit to Baolin Liu for an earlier version of code used for a different project
+#       Resources:
+#           - Frequency Doc for English Words: https://github.com/wolfgarbe/SymSpell
+#
 # ---------------------------------------------------------------------------------------- ###
 
 
@@ -13,9 +16,11 @@ import os
 import sys
 # Load ENTITY REPLACEMENT
 from word_collections import calfresh_placeholders
+from text_processing_functions import *
 
 # Designate paths to English and Spanish Corpus Text Files
-path_to_english_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/big.txt')
+path_to_english_text0 = os.path.join(os.path.dirname(__file__), '../1-Text-Files/big.txt')
+path_to_english_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/frequency_dictionary_en_82_765.txt')
 path_to_spanish_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/spanish-text.txt')
 
 
@@ -39,11 +44,19 @@ def detect_B(text):
             return 'en'
     except UnicodeDecodeError:
         return "None"
-    
+
+
+def load_eng_counter(path_to_english_text):
+    WORDS = {}
+    with open(path_to_english_text, 'r') as text_file:
+        for line in text_file:
+            word, count = line.strip().split(' ', 1)
+            WORDS[word] = int(count)
+    return Counter(WORDS)
 
 # ---------------------------------------------------------------------------------- #
 # Spell Checker is incorporating logic from:  http://norvig.com/spell-correct.html
-# Also See: https://github.com/wolfgarbe/SymSpell
+# Also See: https://github.com/wolfgarbe/SymSpell, https://github.com/pirate/spellchecker
 # --------------------------------------------------------------------------------- #
 
 def words(text): return re.findall(r'\w+', text.lower())
@@ -58,9 +71,12 @@ class Spellchecker():
         """
         # load corpuses
         if lang == "en":
-            self.WORDS = Counter(words(open(path_to_english_text).read())) # English Corpus
+            #self.WORDS = Counter(words(open(path_to_english_text).read())) # English Corpus
+            self.WORDS = load_eng_counter(path_to_english_text)
         elif lang == "es":
             self.WORDS = Counter(words(open(path_to_spanish_text).read()))
+        elif lang == "test":
+            self.WORDS = Counter(words(open(path_to_english_text0).read()))
         else:
             print "Only en (English) and es (Spanish) are currently supported"
 
@@ -90,7 +106,11 @@ class Spellchecker():
         word_list = phrase.split(" ")
         corrections = []
         for word in word_list:
-            corrections.append(self.correction(word))
+            # only attempt to correct word if it is misspelled
+            if check_word(word):
+                corrections.append(word)
+            else:
+                corrections.append(self.correction(word))
         corrected_phrase = " ".join(corrections)
         return corrected_phrase
 
@@ -141,12 +161,31 @@ def spell_correction_language(phrase_tuple):
         return en_spellchecker.correction_phrase(phrase)
     elif lang == 'es':
         return es_spellchecker.correction_phrase(phrase)
+    elif lang == 'test':
+        return test.correction_phrase(phrase)
 
 
 # Load class instances for each language
 # Loading these while loading the module prevents script from having to reload every time
 # the spellcheck function is called
-en_spellchecker = Spellchecker("en")
-es_spellchecker = Spellchecker("es")
 
-# print(spell_check_language(('testr', 'en')))
+# en_spellchecker = Spellchecker("en")
+# es_spellchecker = Spellchecker("es")
+# test = Spellchecker("test")
+#
+# print(spell_correction_language(('semester', 'en')))
+# print(spell_correction_language(('semester', 'test')))
+# print(spell_correction_language(('cuz', 'en')))
+# print(spell_correction_language(('cuz', 'test')))
+# print(spell_correction_language(('penut', 'en')))
+# print(spell_correction_language(('penut', 'test')))
+# print(spell_correction_language(('kids', 'en')))
+# print(spell_correction_language(('kids', 'test')))
+# print(spell_correction_language(('developmentally', 'en')))
+# print(spell_correction_language(('developmentally', 'test')))
+# print(spell_correction_language(('daddi and moms', 'en')))
+# print(spell_correction_language(('daddi and moms', 'test')))
+# print(spell_correction_language(('hiv', 'en')))
+# print(spell_correction_language(('hiv', 'test')))
+# print(en_spellchecker.WORDS)
+
