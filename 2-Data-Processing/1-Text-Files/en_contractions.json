@@ -1,0 +1,56 @@
+{
+    "don't": [
+        {ORTH: "do", LEMMA: "do"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "doesn't": [
+        {ORTH: "does", LEMMA: "do"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "didn't": [
+        {ORTH: "did", LEMMA: "do"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "can't": [
+        {ORTH: "ca", LEMMA: "can"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "couldn't": [
+        {ORTH: "could", LEMMA: "can"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "I've'": [
+        {ORTH: "I", LEMMA: "I"},
+        {ORTH: "'ve'", LEMMA: "have", NORM: "have", TAG: "VERB"}],
+    "haven't": [
+        {ORTH: "have", LEMMA: "have"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "hasn't": [
+        {ORTH: "has", LEMMA: "have"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "hadn't": [
+        {ORTH: "had", LEMMA: "have"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "I'll'": [
+        {ORTH: "I", LEMMA: "I"},
+        {ORTH: "'ll'", LEMMA: "will", NORM: "will", TAG: "VERB"}],
+    "he'll'": [
+        {ORTH: "he", LEMMA: "he"},
+        {ORTH: "'ll'", LEMMA: "will", NORM: "will", TAG: "VERB"}],
+    "she'll'": [
+        {ORTH: "she", LEMMA: "she"},
+        {ORTH: "'ll'", LEMMA: "will", NORM: "will", TAG: "VERB"}],
+    "it'll'": [
+        {ORTH: "it", LEMMA: "it"},
+        {ORTH: "'ll'", LEMMA: "will", NORM: "will", TAG: "VERB"}],
+    "won't": [
+        {ORTH: "wo", LEMMA: "will"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "wouldn't": [
+        {ORTH: "would", LEMMA: "will"},
+        {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "I'm'": [
+        {ORTH: "I", LEMMA: "I"},
+        {ORTH: "'m'", LEMMA: "be", NORM: "am", TAG: "VERB"}],
+    "wasn't": [
+            {ORTH: "was", LEMMA: "be"},
+            {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}],
+    "isn't": [
+            {ORTH: "is", LEMMA: "be"},
+            {ORTH: "n't", LEMMA: "not", NORM: "not", TAG: "RB"}]
+}
