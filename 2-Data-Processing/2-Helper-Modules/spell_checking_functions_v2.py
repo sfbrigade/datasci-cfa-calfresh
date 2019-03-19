@@ -16,14 +16,12 @@ import os
 from nltk.corpus import words, wordnet
 
 # Load ENTITY REPLACEMENT
-from word_collections import calfresh_placeholders
-entity_placeholders = set(["PERSON", "ORG", "GPE", "LOC", "DATE", "MONEY", "CARDINAL"])
+from word_collections import entity_placeholders
 
 # Designate paths to English and Spanish Corpus Text Files
 path_to_english_text0 = os.path.join(os.path.dirname(__file__), '../1-Text-Files/big.txt')
 path_to_english_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/frequency_dictionary_en_82_765.txt')
 path_to_spanish_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/spanish-text.txt')
-
 
 def detect_B(text):
     """
@@ -190,8 +188,8 @@ def spell_correction_language(phrase_tuple):
 
 # test = Spellchecker("test")
 #
-# print(spell_correction_language(('semestre', 'en')))
-# print(spell_correction_language(('semestre', 'es')))
+#print(spell_correction_language(('semestre', 'en')))
+#print(spell_correction_language(('semestre', 'es')))
 # print(spell_correction_language(('semester', 'test')))
 # print(spell_correction_language(('PERSON', 'en')))
 # print(spell_correction_language(('cuz', 'test')))

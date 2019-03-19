@@ -5,8 +5,7 @@
 from word_collections import calfresh_placeholders # These are entity replacement keywords that should stay capitalized
 import enchant
 from enchant.checker import SpellChecker
-entity_placeholders = set(["PERSON", "ORG", "GPE", "LOC", "DATE", "MONEY", "CARDINAL"])
-
+from word_collections import entity_placeholders
 
 def removePunctuation(text):
     '''
