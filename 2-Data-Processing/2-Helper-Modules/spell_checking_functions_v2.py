@@ -15,8 +15,12 @@ from langdetect import detect
 import os
 from nltk.corpus import words, wordnet
 
+
+
 # Load ENTITY REPLACEMENT
 from word_collections import calfresh_placeholders
+entity_placeholders = set(["PERSON", "ORG", "GPE", "LOC", "DATE", "MONEY", "CARDINAL"])
+
 # from text_processing_functions import *
 
 # Designate paths to English and Spanish Corpus Text Files
@@ -38,7 +42,7 @@ def detect_B(text):
         return "None"
     try:
         lang = detect(text)
-        
+
         if lang == 'es':
             return lang
         else:
@@ -55,16 +59,23 @@ def load_eng_counter(path_to_english_text):
             WORDS[word] = int(count)
     return Counter(WORDS)
 
+
 # ---------------------------------------------------------------------------------- #
 # Spell Checker is incorporating logic from:  http://norvig.com/spell-correct.html
 # Also See: https://github.com/wolfgarbe/SymSpell, https://github.com/pirate/spellchecker
 # --------------------------------------------------------------------------------- #
 
-def words(text): return re.findall(r'\w+', text.lower())
+def word_reader(text): return re.findall(r'\w+', text.lower())
+
+
+def english_check_corpus():
+    nltk_words = set(words.words())
+    nltk_wordnet = set(wordnet.words())
+    combined_corpus = nltk_words.union(nltk_wordnet)
+    return combined_corpus
 
 
 class Spellchecker():
-
     def __init__(self, lang="en"):
         """
         Allows Class to load specific languages
@@ -72,19 +83,23 @@ class Spellchecker():
         """
         # load corpuses
         if lang == "en":
-            #self.WORDS = Counter(words(open(path_to_english_text).read())) # English Corpus
+            # self.WORDS = Counter(word_reader(open(path_to_english_text).read())) # English Corpus
             self.WORDS = load_eng_counter(path_to_english_text)
         elif lang == "es":
-            self.WORDS = Counter(words(open(path_to_spanish_text).read()))
+            self.WORDS = Counter(word_reader(open(path_to_spanish_text).read()))
         else:
-            print ("Only en (English) and es (Spanish) are currently supported")
+            print("Only en (English) and es (Spanish) are currently supported")
+
+        # Load corpuses for checking if words are spelled correctly
+        self.english_check_corpus = english_check_corpus()
 
     def check_word(self, word):
         """
-        Checks if word is an English Word
+        Checks if word is an English Word/Spelled correctly
+        :param word: single word (string type)
         :return: Boolean Value
         """
-        return word in wordnet.words()
+        return word in self.english_check_corpus
 
     def P(self, word):
         """
@@ -93,7 +108,7 @@ class Spellchecker():
         :return: word frequency (float type)
         """
         N = sum(self.WORDS.values())
-        return float(self.WORDS[word])/ N
+        return float(self.WORDS[word]) / N
 
     def correction(self, word):
         """
@@ -113,14 +128,14 @@ class Spellchecker():
         corrections = []
         for word in word_list:
             # only attempt to correct word if it is misspelled
-            if self.check_word(word):
+            if self.check_word(word) or word in entity_placeholders:
                 corrections.append(word)
             else:
                 corrections.append(self.correction(word))
         corrected_phrase = " ".join(corrections)
         return corrected_phrase
 
-    def candidates(self, word): 
+    def candidates(self, word):
         """
         Generate possible spelling corrections for word.
         :param word: Single word (string type)
@@ -142,15 +157,15 @@ class Spellchecker():
         :param word: Single word (string type)
         :return: List of words (list of string types)
         """
-        letters    = 'abcdefghijklmnopqrstuvwxyz'
-        splits     = [(word[:i], word[i:])    for i in range(len(word) + 1)]
-        deletes    = [L + R[1:]               for L, R in splits if R]
-        transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R)>1]
-        replaces   = [L + c + R[1:]           for L, R in splits if R for c in letters]
-        inserts    = [L + c + R               for L, R in splits for c in letters]
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        splits = [(word[:i], word[i:]) for i in range(len(word) + 1)]
+        deletes = [L + R[1:] for L, R in splits if R]
+        transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1]
+        replaces = [L + c + R[1:] for L, R in splits if R for c in letters]
+        inserts = [L + c + R for L, R in splits for c in letters]
         return set(deletes + transposes + replaces + inserts)
 
-    def edits2(self, word): 
+    def edits2(self, word):
         """
         Generates all edits that are two edits away from `word`.
         :param word: Single word (string type)
@@ -158,12 +173,14 @@ class Spellchecker():
         """
         return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))
 
+
 # Load class instances for each language
 # Loading these while loading the module prevents script from having to reload every time
 # the spellcheck function is called
 
 en_spellchecker = Spellchecker("en")
 es_spellchecker = Spellchecker("es")
+
 
 def spell_correction_language(phrase_tuple):
     phrase = phrase_tuple[0]
@@ -175,12 +192,12 @@ def spell_correction_language(phrase_tuple):
         return es_spellchecker.correction_phrase(phrase)
 
 
-
 # test = Spellchecker("test")
 #
-print(spell_correction_language(('semestre', 'en')))
+# print(spell_correction_language(('semestre', 'en')))
+# print(spell_correction_language(('semestre', 'es')))
 # print(spell_correction_language(('semester', 'test')))
-# print(spell_correction_language(('cuz', 'en')))
+# print(spell_correction_language(('PERSON', 'en')))
 # print(spell_correction_language(('cuz', 'test')))
 # print(spell_correction_language(('penut', 'en')))
 # print(spell_correction_language(('penut', 'test')))
@@ -193,4 +210,3 @@ print(spell_correction_language(('semestre', 'en')))
 # print(spell_correction_language(('hiv', 'en')))
 # print(spell_correction_language(('hiv', 'test')))
 # print(en_spellchecker.WORDS)
-
