@@ -31,19 +31,3 @@ def initial_phrase_processing(text):
     
     except AttributeError:
         return None
-
-d = enchant.Dict('en_US')
-chkr = SpellChecker('en_US')
-
-def check_phrase(phrase):
-    '''CFA
-    Uses enchant spellchecker to count the number of mispelled words in the phrase
-    returns the number of errors found
-    '''
-    phrase = str(phrase)
-    errors = 0
-    chkr.set_text(phrase)
-    for err in chkr:
-        errors += 1
-
-    return errors
