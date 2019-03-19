@@ -2,10 +2,8 @@
 #       Text Processing Functions for Cal-Fresh Project 
 #
 ### ---------------------------------------------------------------------------------- ###
-from word_collections import calfresh_placeholders # These are entity replacement keywords that should stay capitalized
-import enchant
-from enchant.checker import SpellChecker
-from word_collections import entity_placeholders
+
+from word_collections import entity_placeholders # These are entity replacement keywords that should stay capitalized
 
 def removePunctuation(text):
     '''
