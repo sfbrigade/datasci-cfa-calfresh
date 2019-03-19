@@ -13,10 +13,11 @@ import re
 from collections import Counter
 from langdetect import detect
 import os
-import sys
+from nltk.corpus import words, wordnet
+
 # Load ENTITY REPLACEMENT
 from word_collections import calfresh_placeholders
-from text_processing_functions import *
+# from text_processing_functions import *
 
 # Designate paths to English and Spanish Corpus Text Files
 path_to_english_text0 = os.path.join(os.path.dirname(__file__), '../1-Text-Files/big.txt')
@@ -75,10 +76,15 @@ class Spellchecker():
             self.WORDS = load_eng_counter(path_to_english_text)
         elif lang == "es":
             self.WORDS = Counter(words(open(path_to_spanish_text).read()))
-        elif lang == "test":
-            self.WORDS = Counter(words(open(path_to_english_text0).read()))
         else:
-            print "Only en (English) and es (Spanish) are currently supported"
+            print ("Only en (English) and es (Spanish) are currently supported")
+
+    def check_word(self, word):
+        """
+        Checks if word is an English Word
+        :return: Boolean Value
+        """
+        return word in wordnet.words()
 
     def P(self, word):
         """
@@ -107,7 +113,7 @@ class Spellchecker():
         corrections = []
         for word in word_list:
             # only attempt to correct word if it is misspelled
-            if check_word(word):
+            if self.check_word(word):
                 corrections.append(word)
             else:
                 corrections.append(self.correction(word))
@@ -152,6 +158,12 @@ class Spellchecker():
         """
         return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))
 
+# Load class instances for each language
+# Loading these while loading the module prevents script from having to reload every time
+# the spellcheck function is called
+
+en_spellchecker = Spellchecker("en")
+es_spellchecker = Spellchecker("es")
 
 def spell_correction_language(phrase_tuple):
     phrase = phrase_tuple[0]
@@ -161,19 +173,12 @@ def spell_correction_language(phrase_tuple):
         return en_spellchecker.correction_phrase(phrase)
     elif lang == 'es':
         return es_spellchecker.correction_phrase(phrase)
-    elif lang == 'test':
-        return test.correction_phrase(phrase)
 
 
-# Load class instances for each language
-# Loading these while loading the module prevents script from having to reload every time
-# the spellcheck function is called
 
-# en_spellchecker = Spellchecker("en")
-# es_spellchecker = Spellchecker("es")
 # test = Spellchecker("test")
 #
-# print(spell_correction_language(('semester', 'en')))
+print(spell_correction_language(('semestre', 'en')))
 # print(spell_correction_language(('semester', 'test')))
 # print(spell_correction_language(('cuz', 'en')))
 # print(spell_correction_language(('cuz', 'test')))
