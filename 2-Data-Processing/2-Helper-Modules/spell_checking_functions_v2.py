@@ -15,16 +15,9 @@ from langdetect import detect
 import os
 from nltk.corpus import words, wordnet
 
-
-
 # Load ENTITY REPLACEMENT
 from word_collections import calfresh_placeholders
-<<<<<<< HEAD
 entity_placeholders = set(["PERSON", "ORG", "GPE", "LOC", "DATE", "MONEY", "CARDINAL"])
-=======
->>>>>>> 2b3bf677f2563f3505f43284e86e35a50ac0ae82
-
-# from text_processing_functions import *
 
 # Designate paths to English and Spanish Corpus Text Files
 path_to_english_text0 = os.path.join(os.path.dirname(__file__), '../1-Text-Files/big.txt')
