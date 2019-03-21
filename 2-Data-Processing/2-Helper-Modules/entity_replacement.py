@@ -3,26 +3,46 @@ import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 from spacy.vocab import Vocab
 import re
+import os
 
 
-#declarations
-
-nlp = spacy.load('en')
-nlp_multilingual = spacy.load('en_core_web_sm')
+#load names csv, define entities and test string
+path_to_english_text = os.path.join(os.path.dirname("__file__"), '../1-Text-Files/first_names.csv')
+names = []
 tracked_entities = ['PERSON','ORG','GPE','LOC','DATE','MONEY','CARDINAL']
-names = "Abhishek, edwig, EDUARDO and mary are going for a run"
 test = "Abhishek, edwig, EDUARDO and mary are going for a run"
 
+#open file
+with open(path_to_english_text, 'r') as fp:
+    for line in fp.readlines():
+        name = str(line.strip())
+        names.append(name.lower())
+        names.append(name.title())
+
+
+#load spacy models
+nlp = spacy.load('en')
+nlp_multilingual = spacy.load('en_core_web_sm')
+
+
+#test model based using file input
+doc = nlp(names)
+
+for entity in doc.ents:
+    print(entity.text, entity.label_)
+
+
+#define flags
+NAME = nlp.vocab.add_flag(is_name)
+NAME = nlp_multilingual.vocab.add_flag(is_name)
 def is_name(text):
     return text in names
 
 
-#helper functions
+##HELPER FUNCTIONS
 
-#define vocab list of entities and flag token fititng criteria with NAME
+#define vocab list of entities and flag token fitting criteria with NAME
 def name_placeholder(text):
-    NAME = nlp.vocab.add_flag(is_name)
-    NAME = nlp_multilingual.vocab.add_flag(is_name)
     doc_m = nlp_multilingual(text)
     whitelist_text = text
     for token in doc_m:
@@ -45,12 +65,12 @@ def recognizer(text):
         pass
 
 
-#locate punctuation and apply whitespace as padding around target
-def paddingFunc(text):
-    text = re.sub('([.,!?()])', r' \1 ', text)
-    text = re.sub('\s{2,}', ' ', text)
-    return text
 
+#let's hold off on whitespacing:
+#def paddingFunc(text):
+#    text = re.sub('([.,!?()])', r' \1 ', text)
+#    text = re.sub('\s{2,}', ' ', text)
+#    return text
 
 
 #original entity replacement code for reference
