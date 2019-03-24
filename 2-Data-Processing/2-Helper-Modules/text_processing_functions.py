@@ -22,7 +22,7 @@ def initial_phrase_processing(text):
         split_text = text.split(" ")
         # only process words that are not a entity calfresh placeholder
         processed_text_list = [word.lower().strip() if word not in entity_placeholders else word for word in split_text]
-        processed_text_list = [removePunctuation(word) for word in processed_text_list if word !=""]
+        # processed_text_list = [removePunctuation(word) for word in processed_text_list if word !=""]
         processed_text = " ".join(processed_text_list)
         return processed_text
     
