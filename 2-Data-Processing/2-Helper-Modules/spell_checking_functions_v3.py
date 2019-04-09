@@ -17,9 +17,12 @@ from nltk.corpus import words, wordnet
 import string
 from nltk.tokenize import sent_tokenize, word_tokenize
 from sacremoses import MosesDetokenizer
+from pycontractions import Contractions
 
 detokenizer = MosesDetokenizer()
-
+# Load pre-trained Glove Vector Model - https://nlp.stanford.edu/projects/glove/
+# Used for expanding contractions
+cont = Contractions(api_key="glove-twitter-25")
 
 # Load ENTITY REPLACEMENT
 from word_collections import entity_placeholders
@@ -76,6 +79,11 @@ def english_check_corpus():
     return combined_corpus
 
 
+def expand_contractions(text):
+    expanded_text = list(cont.expand_texts([text]))
+    return expanded_text[0]
+
+
 class Spellchecker():
 
     def __init__(self, lang="en"):
@@ -95,13 +103,39 @@ class Spellchecker():
         # Load corpuses for checking if words are spelled correctly
         self.english_check_corpus = english_check_corpus()
 
-    def check_punctuation(self, token):
+    @staticmethod
+    def check_punctuation(token):
         """
         Checks if token is punctuation
         :param token: tokenized string component
         :return: Boolean
         """
         return token in string.punctuation
+
+    @staticmethod
+    def initial_text_processing(text):
+        """
+        Applies contraction expansion and coerces text to lower case while preserving
+        Entity Placeholders
+        :param text: String of text, can be a phrase
+        :return: Processed String
+        """
+
+        # expand contractions
+        text = expand_contractions(text)
+
+        # split phrase into tokens
+        doc = word_tokenize(text)
+
+        for i in range(len(doc)):
+            if doc[i] in entity_placeholders:
+                pass
+            else:
+                doc[i] = doc[i].lower()
+
+        # combine tokens back to string
+        processed_phrase = detokenizer.detokenize(doc)
+        return processed_phrase
 
     def check_word(self, word):
         """
@@ -152,7 +186,6 @@ class Spellchecker():
         corrected_phrase = detokenizer.detokenize(doc)
 
         return corrected_phrase
-
 
     def candidates(self, word):
         """
@@ -229,6 +262,8 @@ def spell_correction_language(phrase_tuple):
 # print(spell_correction_language(('hiv', 'en')))
 # print(spell_correction_language(('hiv', 'test')))
 # print(en_spellchecker.WORDS)
-
-print(spell_correction_language(('the cat, is   undar the tree  .', 'en')))
+#print(spell_correction_language(('the cat, is   undar the tree  .', 'en')))
+#print (en_spellchecker.initial_text_processing("she's coming top the test PERSON, PLACE thing"))
+#print (en_spellchecker.initial_text_processing("I;m comign home, I'm coming im coming"))
+#print (en_spellchecker.expand_contractions("she's shes coming"))
 
