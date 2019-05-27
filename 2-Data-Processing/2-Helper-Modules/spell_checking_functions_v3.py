@@ -29,9 +29,22 @@ from word_collections import entity_placeholders
 detokenizer = MosesDetokenizer()
 
 # Designate paths to English and Spanish Corpus Text Files
-path_to_english_text0 = os.path.join(os.path.dirname(__file__), '../1-Text-Files/big.txt')
+# path_to_english_text0 = os.path.join(os.path.dirname(__file__), '../1-Text-Files/big.txt')
+path_to_english_text0 = os.path.join(os.path.dirname(__file__), '../1-Text-Files/calfresh_text.txt')
 path_to_english_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/frequency_dictionary_en_82_765.txt')
 path_to_spanish_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/spanish-text.txt')
+
+
+def weightCalFresh(path_to_english_text):
+    """
+    Determine whether CalFresh or standard freq dict weightings will be applied to correction
+    :param path: the file path where the freq dict is present
+    """
+    if "calfresh_text" in path_to_english_text: 
+        return True
+    else:
+        return False
+
 
 def detect_B(text):
     """
@@ -86,15 +99,18 @@ def expand_contractions(text):
 
 class Spellchecker():
 
-    def __init__(self, lang="en"):
+    def __init__(self, lang="en", weightCalFresh=True):
         """
         Allows Class to load specific languages
         :param lang: language in which to apply spellcheck (string type)
+        :param weightCalFresh:  flag to determine freq dict
         """
         # load corpuses
         if lang == "en":
-            # self.WORDS = Counter(word_reader(open(path_to_english_text).read())) # English Corpus
-            self.WORDS = load_eng_counter(path_to_english_text)
+            if weightCalFresh == True:
+                self.WORDS = Counter(word_reader(open(path_to_english_text).read())) #  Convert CalFresh stories to freq dict
+            else: 
+                self.WORDS = load_eng_counter(path_to_english_text)
         elif lang == "es":
             self.WORDS = Counter(word_reader(open(path_to_spanish_text).read()))
         else:
