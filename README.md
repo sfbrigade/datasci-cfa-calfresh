@@ -13,7 +13,6 @@ The purpose of this project is help Code for America process and analyze text re
 * Code for America
 * https://www.codeforamerica.org, https://www.getcalfresh.org
 * Partner contact: Eric Gianella
-* If you do not have a partner leave this section out
 
 ### Methods Used
 * Data Pipelines
