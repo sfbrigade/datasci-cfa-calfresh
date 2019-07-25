@@ -58,8 +58,8 @@ Code for America wishes to utilize the rich information within the free response
 
 |Name     |  Slack Handle   | 
 |---------|-----------------|
-|[Ian Patrick Colrick ](https://github.com/icolrick)| @icorlick      |
-|[Melodie Belot] |     @Melodie   |
+|[Ian Colrick ](https://github.com/icolrick)| @icorlick      |
+|Melodie Belot |     @Melodie   |
 
 ## Contact
 * If you haven't joined the SF Brigade Slack, [you can do that here](http://c4sf.me/slack).  
