@@ -29,7 +29,7 @@ from word_collections import entity_placeholders
 detokenizer = MosesDetokenizer()
 
 # Designate paths to English and Spanish Corpus Text Files
-path_to_english_text0 = os.path.join(os.path.dirname(__file__), '../1-Text-Files/big.txt')
+path_to_calfresh_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/calfresh_text.txt')
 path_to_english_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/frequency_dictionary_en_82_765.txt')
 path_to_spanish_text = os.path.join(os.path.dirname(__file__), '../1-Text-Files/spanish-text.txt')
 
@@ -85,7 +85,6 @@ def expand_contractions(text):
 
 
 class Spellchecker():
-
     def __init__(self, lang="en"):
         """
         Allows Class to load specific languages
@@ -93,13 +92,12 @@ class Spellchecker():
         """
         # load corpuses
         if lang == "en":
-            # self.WORDS = Counter(word_reader(open(path_to_english_text).read())) # English Corpus
             self.WORDS = load_eng_counter(path_to_english_text)
+            self.CALFRESH_WORDS = Counter(word_reader(open(path_to_calfresh_text).read())) #  Convert CalFresh stories to freq dict
         elif lang == "es":
             self.WORDS = Counter(word_reader(open(path_to_spanish_text).read()))
         else:
             print("Only en (English) and es (Spanish) are currently supported")
-
         # Load corpuses for checking if words are spelled correctly
         self.english_check_corpus = english_check_corpus()
 
@@ -187,13 +185,21 @@ class Spellchecker():
 
         return corrected_phrase
 
-    def candidates(self, word):
+    def candidates(self, w):
         """
-        Generate possible spelling corrections for word.
+        Generate possible spelling corrections for word prioritizing CalFresh known words over corpus.
         :param word: Single word (string type)
         :return: List of words (list of string types)
         """
-        return (self.known([word]) or self.known(self.edits1(word)) or self.known(self.edits2(word)) or [word])
+        result =  (self.known_calfresh([w]) 
+            or self.known_calfresh(self.edits1(w)) 
+            or self.known_calfresh(self.edits2(w)) 
+            or self.known([w]) 
+            or self.known(self.edits1(w)) 
+            or self.known(self.edits2(w)) 
+            or [w])
+
+        return result
 
     def known(self, word_list):
         """
@@ -202,6 +208,14 @@ class Spellchecker():
         :return: List of words (list of string types) that are in loaded corpus text
         """
         return set(w for w in word_list if w in self.WORDS)
+
+    def known_calfresh(self, word_list):
+        """
+        The subset of `words` that appear in the dictionary of CALFRESH_WORDS
+        :param word_list: list of words
+        :return: List of words (list of string types) that are in loaded calfresh corpus text
+        """
+        return set(w for w in word_list if w in self.CALFRESH_WORDS)
 
     def edits1(self, word):
         """
@@ -266,4 +280,3 @@ def spell_correction_language(phrase_tuple):
 #print (en_spellchecker.initial_text_processing("she's coming top the test PERSON, PLACE thing"))
 #print (en_spellchecker.initial_text_processing("I;m comign home, I'm coming im coming"))
 #print (en_spellchecker.expand_contractions("she's shes coming"))
-
