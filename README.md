@@ -44,6 +44,7 @@ Code for America wishes to utilize the rich information within the free response
 1. Clone this repo (for help see this [tutorial](https://help.github.com/articles/cloning-a-repository/)).
 2. The Data for this project contains sensitive information.  Please reach out to the leads for access.
 3. Data Processing Code (including our custom spellchecker) can be accessed [here](https://github.com/sfbrigade/datasci-cfa-calfresh/tree/master/2-Data-Processing)
+4. Sample Text Data for prototyping and exploring can be accessed [here](https://www.dropbox.com/sh/k1x8mru6xfux1jl/AABJaj-F-M7YoMtykggO7_y_a?dl=0)
 
 
 ## Featured Notebooks/Analysis/Deliverables
